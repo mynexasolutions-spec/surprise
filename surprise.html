@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>A Little Something For You ♥</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Dancing+Script:wght@400;600;700&family=Fredoka:wght@300;400;500;600&family=Lilita+One&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rose-deep:#a8324d;
+    --rose:#c94668;
+    --rose-soft:#e07b94;
+    --pink-hot:#ff4d7a;
+    --pink:#ff8aaa;
+    --pink-soft:#ffd0dd;
+    --pink-cream:#fff1f4;
+    --cream:#fffaf0;
+    --ink:#3b1722;
+    --ink-soft:#6e3346;
+    --paper:#fdfaf4;
+    --paper-grid:rgba(168,50,77,.08);
+    --shadow:0 20px 60px -20px rgba(168,50,77,.45);
+    --shadow-card:0 30px 80px -30px rgba(168,50,77,.55), 0 8px 20px -10px rgba(168,50,77,.35);
+    --display:'Lilita One',cursive;
+    --script:'Sacramento',cursive;
+    --hand:'Caveat',cursive;
+    --soft:'Fredoka',sans-serif;
+    --dance:'Dancing Script',cursive;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;}
+  body{
+    font-family:var(--soft);
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 20% 10%, #ffe1ea 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, #ffd0dd 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, #ffc0d3 0%, #e07b94 60%, #a8324d 100%);
+    cursor:none;
+    user-select:none;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- CUSTOM CURSOR ---------- */
+  .cursor-dot,.cursor-ring{
+    position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+    transform:translate(-50%,-50%);
+    will-change:transform;
+  }
+  .cursor-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 12px rgba(255,77,122,.9), 0 0 24px rgba(255,77,122,.5);
+    transition:transform .12s ease;
+  }
+  .cursor-ring{
+    width:38px;height:38px;border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.85);
+    backdrop-filter:blur(2px);
+    transition:transform .25s cubic-bezier(.2,.9,.3,1.4), width .25s, height .25s, border-color .25s;
+  }
+  .cursor-ring.hover{
+    width:60px;height:60px;
+    border-color:#fff;
+    background:rgba(255,255,255,.12);
+  }
+
+  /* ---------- FLOATING HEARTS BACKGROUND ---------- */
+  .heart-bg{
+    position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+  }
+  .heart-bg span{
+    position:absolute;bottom:-40px;
+    color:rgba(255,255,255,.35);
+    animation:float-up linear infinite;
+    filter:drop-shadow(0 2px 4px rgba(168,50,77,.35));
+  }
+  @keyframes float-up{
+    0%{transform:translateY(0) rotate(0deg) scale(.7);opacity:0;}
+    10%{opacity:1;}
+    100%{transform:translateY(-110vh) rotate(360deg) scale(1.1);opacity:0;}
+  }
+
+  /* ---------- STAGE ---------- */
+  .stage{
+    position:relative;width:100%;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    perspective:1400px;
+    z-index:1;
+  }
+
+  /* ---------- PAGES ---------- */
+  .page{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateY(40px) scale(.96);
+    transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1), visibility .7s;
+  }
+  .page.active{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transform:translateY(0) scale(1);
+  }
+  .page.leaving{
+    opacity:0;
+    transform:translateY(-40px) scale(1.02);
+  }
+
+  /* ---------- CARD ---------- */
+  .card{
+    position:relative;
+    width:min(720px, 92vw);
+    background:var(--paper);
+    border-radius:42px;
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .card::before{
+    /* graph paper texture */
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--paper-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+    background-size:34px 34px;
+    opacity:.55;
+    z-index:0;
+    mask-image:radial-gradient(ellipse at center, #000 60%, transparent 100%);
+  }
+  .card::after{
+    /* paper grain */
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,205,221,.4) 0%, transparent 40%),
+      radial-gradient(circle at 70% 80%, rgba(255,205,221,.3) 0%, transparent 40%);
+    z-index:0;
+    pointer-events:none;
+  }
+  .card-inner{position:relative;z-index:2;padding:64px 56px;}
+
+  /* wavy pink side ribbons - more dramatic curves */
+  .ribbon-left,.ribbon-right{
+    position:absolute;top:0;bottom:0;width:170px;z-index:1;
+    pointer-events:none;
+  }
+  .ribbon-left{
+    left:0;
+    background:
+      radial-gradient(circle at 100% 18%, transparent 95px, var(--rose) 96px 100%),
+      radial-gradient(circle at 0% 50%, var(--pink-hot) 120px, transparent 121px);
+    -webkit-mask:linear-gradient(#000,#000);
+            mask:linear-gradient(#000,#000);
+    background:linear-gradient(135deg, var(--rose-deep) 0%, var(--rose) 50%, var(--pink-hot) 100%);
+    clip-path:polygon(
+      0% 0%, 100% 0%,
+      40% 8%, 90% 22%, 30% 42%, 95% 55%, 35% 75%, 80% 90%, 50% 100%,
+      0% 100%
+    );
+  }
+  .ribbon-right{
+    right:0;
+    background:linear-gradient(225deg, var(--rose-deep) 0%, var(--rose) 50%, var(--pink-hot) 100%);
+    clip-path:polygon(
+      0% 0%, 100% 0%,
+      100% 100%, 50% 100%,
+      20% 90%, 65% 75%, 5% 55%, 70% 42%, 10% 22%, 60% 8%
+    );
+  }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  h1.display{
+    font-family:var(--display);
+    color:var(--rose-deep);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    line-height:.95;
+    text-shadow:3px 3px 0 rgba(255,255,255,.6), 6px 6px 0 rgba(168,50,77,.15);
+  }
+  h1.script{
+    font-family:var(--script);
+    color:var(--rose);
+    line-height:1.05;
+  }
+  h1.dance{
+    font-family:var(--dance);
+    color:var(--rose-deep);
+    font-weight:700;
+    line-height:1.1;
+  }
+  .hand{font-family:var(--hand);color:var(--ink);font-weight:600;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--hand);font-weight:700;font-size:30px;
+    background:var(--rose);color:#fff;
+    padding:14px 38px;border:none;border-radius:999px;
+    cursor:none;
+    text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px;
+    box-shadow:0 10px 25px -10px rgba(168,50,77,.6), inset 0 -3px 0 rgba(0,0,0,.12);
+    transition:transform .18s ease, box-shadow .18s ease, background .2s;
+    position:relative;
+  }
+  .btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 16px 30px -10px rgba(168,50,77,.7), inset 0 -3px 0 rgba(0,0,0,.12);}
+  .btn:active{transform:translateY(0) scale(.98);}
+  .btn.outline{
+    background:transparent;color:var(--rose-deep);
+    border:2px solid var(--rose);
+    box-shadow:none;
+    text-decoration:underline;
+  }
+  .btn.outline:hover{background:var(--rose);color:#fff;}
+  .btn.ghost{
+    background:transparent;color:var(--rose-deep);
+    box-shadow:none;
+    font-size:22px;padding:8px 16px;
+  }
+
+  /* ---------- PAGE 1: PASSWORD ---------- */
+  #page-password .card-inner{padding:80px 60px;text-align:center;}
+  .browser-bar{
+    position:absolute;top:0;left:0;right:0;height:38px;
+    background:#f3eee6;
+    display:flex;align-items:center;gap:7px;padding:0 16px;
+    border-bottom:1px solid #e4dcc8;z-index:3;
+  }
+  .browser-bar i{width:11px;height:11px;border-radius:50%;display:block;}
+  .browser-bar i:nth-child(1){background:#ff5f57;}
+  .browser-bar i:nth-child(2){background:#febc2e;}
+  .browser-bar i:nth-child(3){background:#28c840;}
+  .browser-bar .url{
+    margin-left:14px;font-family:var(--soft);font-size:12px;
+    color:#9b8a76;letter-spacing:.04em;
+    background:#fff;padding:4px 12px;border-radius:6px;
+    border:1px solid #e4dcc8;
+  }
+  .pw-title{font-family:var(--soft);font-size:22px;color:#444;font-weight:500;letter-spacing:.01em;}
+  .pw-input{
+    margin-top:20px;width:min(360px,80%);
+    border:none;border-bottom:1.5px solid #888;
+    background:transparent;padding:8px 4px;
+    font-family:var(--soft);font-size:24px;
+    text-align:center;color:#222;outline:none;
+    letter-spacing:.4em;cursor:none;
+  }
+  .pw-input::placeholder{letter-spacing:0;color:#bbb;font-style:italic;}
+  .captcha{
+    margin:26px auto 0;display:flex;align-items:center;justify-content:space-between;
+    width:min(310px,80%);padding:10px 14px;
+    border:1px solid #d3d3d3;border-radius:4px;background:#f9f9f9;
+    font-family:var(--soft);font-size:14px;color:#555;
+  }
+  .captcha .left{display:flex;align-items:center;gap:10px;}
+  .captcha .check{
+    width:24px;height:24px;border:2px solid #c0c0c0;background:#fff;border-radius:3px;
+    display:flex;align-items:center;justify-content:center;cursor:none;
+    transition:all .25s;
+  }
+  .captcha .check.checked{background:#1c89e6;border-color:#1c89e6;}
+  .captcha .check.checked::after{content:"✓";color:#fff;font-weight:bold;font-size:16px;}
+  .captcha .right{font-size:9px;color:#888;text-align:right;line-height:1.2;}
+  .captcha .right .recap{font-size:11px;color:#555;font-weight:500;}
+  .pw-continue{
+    margin-top:24px;width:min(310px,80%);
+    background:#6c5ce7;color:#fff;border:none;
+    padding:12px;border-radius:4px;font-family:var(--soft);font-size:16px;
+    cursor:none;letter-spacing:.02em;
+    transition:all .25s;opacity:.5;pointer-events:none;
+  }
+  .pw-continue.active{opacity:1;pointer-events:auto;}
+  .pw-continue.active:hover{background:#5f4dd6;transform:translateY(-1px);}
+  .pw-hint{margin-top:16px;font-family:var(--hand);font-size:18px;color:var(--rose);}
+  .pw-error{color:#d63031;font-size:14px;min-height:20px;margin-top:8px;font-family:var(--soft);}
+
+  /* Headline above password (matching the video) */
+  .insta-bar{
+    position:fixed;top:0;left:0;right:0;
+    background:#000;color:#fff;padding:14px 18px;z-index:50;
+    font-family:var(--soft);font-weight:700;font-size:20px;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    letter-spacing:.01em;
+    transform:translateY(-100%);
+    transition:transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .insta-bar.show{transform:translateY(0);}
+
+  /* ---------- PAGE 2: HEY ---------- */
+  .hey-layout{display:flex;align-items:center;gap:28px;}
+  .hey-text{flex:1;}
+  .hey-img{
+    flex:0 0 220px;height:240px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .hey-img svg{width:100%;height:100%;filter:drop-shadow(0 10px 20px rgba(168,50,77,.3));}
+  .hey-title{font-family:var(--display);font-size:78px;color:var(--rose-deep);line-height:.95;letter-spacing:.01em;text-shadow:3px 3px 0 rgba(255,255,255,.7), 6px 6px 0 rgba(168,50,77,.15);}
+  .hey-sub{font-family:var(--dance);font-size:38px;color:var(--ink-soft);margin-top:4px;line-height:1.1;font-weight:600;}
+  .hey-sub-2{font-family:var(--script);font-size:36px;color:var(--rose-soft);margin-top:-4px;}
+  .hey-btns{display:flex;gap:18px;margin-top:26px;position:relative;}
+  #btn-no{transition:transform .15s linear, background .2s;}
+
+  /* ---------- PAGE 3: HOW DARE ---------- */
+  .dare-wrap{text-align:center;padding:30px 0;}
+  .dare-puppy{margin:0 auto 8px;width:220px;height:220px;display:block;animation:wiggle 2s ease-in-out infinite;}
+  @keyframes wiggle{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+  .dare-title{font-family:var(--display);font-size:54px;color:var(--rose);letter-spacing:.05em;margin-bottom:18px;text-shadow:2px 2px 0 rgba(255,255,255,.6);}
+
+  /* ---------- PAGE 4: GOOD GURLLL ---------- */
+  .good-wrap{text-align:center;padding:20px 0;}
+  .good-puppy{margin:0 auto;width:240px;height:240px;display:block;animation:hop 1.4s ease-in-out infinite;}
+  @keyframes hop{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .good-title{font-family:var(--dance);font-weight:700;font-size:48px;color:var(--rose);margin-top:6px;}
+
+  /* ---------- PAGE 5: HAPPY BIRTHDAY ---------- */
+  .bday-wrap{text-align:center;position:relative;}
+  .bday-dog{margin:0 auto 4px;width:240px;height:240px;display:block;animation:bday-bounce 1.8s ease-in-out infinite;}
+  @keyframes bday-bounce{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-10px) rotate(2deg);}}
+  .bday-title{font-family:var(--display);font-size:62px;color:var(--rose-deep);letter-spacing:.05em;text-shadow:3px 3px 0 rgba(255,255,255,.7), 6px 6px 0 rgba(168,50,77,.15);}
+  .bday-line{font-family:var(--soft);font-weight:500;font-size:18px;color:var(--ink-soft);letter-spacing:.18em;text-transform:uppercase;margin-top:14px;}
+  .bday-line2{font-family:var(--soft);font-weight:500;font-size:18px;color:var(--ink-soft);letter-spacing:.18em;text-transform:uppercase;margin-top:4px;}
+  .next-link{position:absolute;bottom:-14px;right:8px;font-family:var(--dance);font-size:32px;color:var(--rose-deep);text-decoration:underline;cursor:none;font-weight:700;}
+  .next-link:hover{color:var(--pink-hot);transform:translateX(4px);}
+  .next-link{transition:all .2s;}
+
+  /* Confetti */
+  .confetti-piece{position:fixed;top:-20px;width:10px;height:14px;z-index:100;pointer-events:none;}
+
+  /* ---------- PAGE 6: ENVELOPE ---------- */
+  .env-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:30px 0;}
+  .envelope{
+    position:relative;width:320px;height:220px;
+    perspective:1000px;cursor:none;
+    transition:transform .3s;
+  }
+  .envelope:hover{transform:scale(1.04);}
+  .env-body{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,#ffd0dd 0%, #ffb0c5 100%);
+    border-radius:6px;
+    box-shadow:0 20px 40px -15px rgba(168,50,77,.4);
+  }
+  .env-flap{
+    position:absolute;top:0;left:0;right:0;height:50%;
+    background:linear-gradient(180deg,#ffc1d1 0%, #ff9bb5 100%);
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    transform-origin:top;
+    transition:transform .9s cubic-bezier(.2,.8,.2,1);
+    z-index:3;
+  }
+  .envelope.open .env-flap{transform:rotateX(180deg);}
+  .env-bow{
+    position:absolute;top:48%;left:0;right:0;
+    display:flex;align-items:center;justify-content:center;
+    z-index:2;
+    transform:translateY(-50%);
+  }
+  .env-bow svg{width:90px;height:46px;}
+  .env-ribbon-h{position:absolute;top:50%;left:0;right:0;height:18px;background:linear-gradient(180deg,#ff6f93 0%,#d94668 100%);transform:translateY(-50%);z-index:1;}
+  .env-letter{
+    position:absolute;left:14px;right:14px;bottom:12px;
+    height:80%;background:#fffaf0;border-radius:4px;
+    box-shadow:0 -4px 12px -4px rgba(0,0,0,.15);
+    transform:translateY(0);
+    transition:transform .8s cubic-bezier(.2,.8,.2,1) .3s;
+    z-index:0;
+  }
+  .envelope.open .env-letter{transform:translateY(-90px);}
+  .env-letter::before{
+    content:"";position:absolute;inset:14px;
+    background:
+      repeating-linear-gradient(transparent 0, transparent 18px, rgba(168,50,77,.15) 18px, rgba(168,50,77,.15) 19px);
+  }
+  .env-letter::after{
+    content:"♥";position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    font-size:28px;color:var(--rose);
+  }
+  .env-cta{font-family:var(--dance);font-size:38px;color:var(--rose-deep);font-weight:700;text-decoration:underline;}
+
+  /* ---------- PAGE 7: LETTER ---------- */
+  .letter-layout{display:flex;align-items:center;gap:24px;padding:10px 0;}
+  .letter-paper{
+    flex:1;background:#fffaf2;
+    padding:26px 28px;border-radius:6px;
+    box-shadow:0 18px 40px -16px rgba(168,50,77,.4);
+    font-family:var(--soft);font-size:17px;line-height:1.55;
+    color:#3a1c2a;position:relative;
+  }
+  .letter-paper::before{
+    content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(-3deg);
+    width:80px;height:14px;background:linear-gradient(90deg,#ff8aaa 0%,#ff5f8f 100%);
+    border-radius:2px;
+  }
+  .letter-paper .accent{color:var(--rose);font-style:italic;font-weight:500;}
+  .letter-locket{
+    flex:0 0 180px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  }
+  .locket svg{width:170px;height:120px;filter:drop-shadow(0 8px 16px rgba(168,50,77,.35));}
+  .teddy{width:90px;height:90px;animation:swing 3s ease-in-out infinite;transform-origin:top center;}
+  @keyframes swing{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+  .click-corner{position:absolute;bottom:14px;right:18px;display:flex;align-items:center;gap:6px;font-family:var(--dance);font-size:24px;color:var(--rose-deep);font-weight:700;cursor:none;}
+  .click-corner svg{width:30px;height:30px;}
+
+  /* ---------- PAGE 8: I LOVE YOU ---------- */
+  .iloveyou-wrap{padding:10px 0;text-align:center;position:relative;}
+  .photo-string{
+    position:relative;width:100%;height:200px;margin-bottom:18px;
+  }
+  .photo-string::before{
+    content:"";position:absolute;top:0;left:5%;right:5%;height:2px;
+    background:#444;transform:rotate(-1.5deg);
+    box-shadow:0 1px 0 rgba(0,0,0,.2);
+  }
+  .polaroid{
+    position:absolute;top:10px;
+    background:#fff;padding:8px 8px 28px;
+    box-shadow:0 10px 24px -8px rgba(0,0,0,.4);
+    border-radius:2px;
+    transition:transform .3s;
+  }
+  .polaroid:hover{transform:translateY(-6px) scale(1.05) !important;z-index:5;}
+  .polaroid::before{
+    content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    width:6px;height:18px;background:#2a4d6e;border-radius:2px;
+    box-shadow:0 2px 4px rgba(0,0,0,.3);
+  }
+  .polaroid .pic{width:130px;height:130px;display:block;}
+  .polaroid-1{left:8%;transform:rotate(-8deg);}
+  .polaroid-2{left:38%;transform:rotate(3deg);top:30px;}
+  .polaroid-3{right:8%;transform:rotate(7deg);}
+  .iloveyou-title{font-family:var(--display);font-size:62px;color:var(--rose);letter-spacing:.04em;text-shadow:3px 3px 0 rgba(255,255,255,.7);}
+  .iloveyou-title .o{color:var(--pink-hot);position:relative;}
+  .iloveyou-title .o::before{content:"♥";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--rose-deep);font-size:.7em;}
+  .iloveyou-sub{font-family:var(--script);font-size:30px;color:var(--ink-soft);margin-top:4px;}
+  .gift-corner{position:absolute;bottom:0;right:8px;text-align:center;cursor:none;}
+  .gift-corner svg{width:56px;height:56px;filter:drop-shadow(0 6px 12px rgba(168,50,77,.35));}
+  .gift-corner span{display:block;font-family:var(--dance);font-size:22px;color:var(--rose-deep);font-weight:700;margin-top:-4px;}
+  .cake-corner{position:absolute;bottom:-4px;left:6px;}
+  .cake-corner svg{width:80px;height:80px;}
+
+  /* ---------- PAGE 9: GIFT BOX ---------- */
+  .gift-wrap{text-align:center;padding:10px 0;position:relative;}
+  .gift-title{font-family:var(--dance);font-size:48px;color:var(--rose-deep);font-weight:700;margin-bottom:14px;}
+  .giftbox{margin:0 auto;width:240px;height:240px;cursor:none;transition:transform .3s;display:block;animation:gift-pulse 2s ease-in-out infinite;}
+  @keyframes gift-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+  .giftbox:hover{transform:scale(1.08) rotate(-3deg);}
+  .gift-arrow{font-family:var(--dance);font-size:28px;color:var(--ink-soft);font-weight:600;margin-top:10px;font-style:italic;}
+  .puppy-corner{position:absolute;bottom:-6px;right:0;width:110px;height:110px;}
+
+  /* ---------- PAGE 10: VIRTUAL HUG ---------- */
+  .hug-wrap{text-align:center;padding:6px 0;position:relative;}
+  .hug-title{font-family:var(--dance);font-size:46px;color:var(--rose-deep);font-weight:700;margin-bottom:8px;line-height:1.1;}
+  .hug-bears{width:220px;height:200px;margin:0 auto;display:block;}
+  .hug-bears g{transform-origin:center;animation:hug-sway 3s ease-in-out infinite;}
+  @keyframes hug-sway{0%,100%{transform:rotate(-2deg) scale(1);}50%{transform:rotate(2deg) scale(1.02);}}
+  .flowers{position:absolute;bottom:-10px;right:-10px;width:120px;height:120px;}
+  .hug-final{font-family:var(--script);font-size:32px;color:var(--rose);margin-top:14px;}
+  .restart-btn{
+    margin-top:18px;font-family:var(--hand);font-size:22px;color:var(--rose-deep);
+    background:transparent;border:none;cursor:none;text-decoration:underline;font-weight:700;
+  }
+  .restart-btn:hover{color:var(--pink-hot);}
+
+  /* ---------- BIG HEARTS BURST ---------- */
+  .burst{position:fixed;pointer-events:none;z-index:200;font-size:28px;animation:burst-out 1.4s ease-out forwards;}
+  @keyframes burst-out{
+    0%{transform:scale(0) translate(0,0);opacity:1;}
+    50%{transform:scale(1.4) translate(var(--bx),var(--by));opacity:1;}
+    100%{transform:scale(.8) translate(calc(var(--bx)*1.6),calc(var(--by)*1.6 - 30px));opacity:0;}
+  }
+
+  /* sparkle */
+  .sparkle{position:absolute;color:#fff;font-size:22px;pointer-events:none;animation:sparkle 1.6s ease-in-out infinite;}
+  @keyframes sparkle{0%,100%{opacity:.3;transform:scale(.7);}50%{opacity:1;transform:scale(1.2);}}
+
+  /* Responsive */
+  @media (max-width:680px){
+    .card-inner{padding:42px 28px;}
+    .ribbon-left,.ribbon-right{width:60px;}
+    .hey-title{font-size:54px;}
+    .hey-sub{font-size:30px;}
+    .hey-img{flex:0 0 130px;height:160px;}
+    .letter-layout{flex-direction:column-reverse;}
+    .letter-locket{flex-direction:row;}
+    .bday-title{font-size:46px;}
+    .iloveyou-title{font-size:46px;}
+    .photo-string{height:160px;}
+    .polaroid .pic{width:90px;height:90px;}
+    .insta-bar{font-size:14px;padding:10px;}
+    .gift-corner svg{width:42px;height:42px;}
+    .cake-corner svg{width:60px;height:60px;}
+    .puppy-corner{width:80px;height:80px;}
+  }
+  @media (hover:none){
+    body{cursor:auto;}
+    .cursor-dot,.cursor-ring{display:none;}
+    .btn,.click-corner,.gift-corner,.restart-btn,.next-link,.giftbox,.envelope,input{cursor:pointer;}
+    .pw-continue{cursor:pointer;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Top instagram-style caption bar -->
+<div class="insta-bar" id="instaBar">Bcz she deserves the best surprise <span style="color:#ff4d6a;">❤</span></div>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Floating hearts background -->
+<div class="heart-bg" id="heartBg"></div>
+
+<div class="stage">
+
+  <!-- ============ PAGE 1: PASSWORD ============ -->
+  <section class="page active" id="page-1">
+    <div class="card" style="background:#fff;">
+      <div class="browser-bar">
+        <i></i><i></i><i></i>
+        <span class="url">https://for-you-bbg.love/private</span>
+      </div>
+      <div class="card-inner" style="padding-top:80px;text-align:center;">
+        <p class="pw-title">Enter the password to view</p>
+        <input id="pwInput" class="pw-input" type="password" placeholder="•••••••••" maxlength="20"/>
+        <div class="captcha">
+          <div class="left">
+            <span class="check" id="captchaCheck"></span>
+            <span>I'm not a robot</span>
+          </div>
+          <div class="right">
+            <div class="recap">reCAPTCHA</div>
+            <div>Privacy • Terms</div>
+          </div>
+        </div>
+        <button class="pw-continue" id="pwContinue">Continue</button>
+        <p class="pw-hint">psst… try typing <b style="color:var(--rose-deep)">"bbg"</b> ♥</p>
+        <p class="pw-error" id="pwError"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 2: HEY ============ -->
+  <section class="page" id="page-2">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="hey-layout">
+          <div class="hey-text">
+            <h1 class="hey-title">HEY!!</h1>
+            <div class="hey-sub">I made something for you</div>
+            <div class="hey-sub-2">Do you want to see?</div>
+            <div class="hey-btns">
+              <button class="btn" data-go="4">Yes</button>
+              <button class="btn outline" id="btn-no">No</button>
+            </div>
+          </div>
+          <div class="hey-img">
+            <!-- Puppy with rose SVG -->
+            <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+              <!-- body -->
+              <ellipse cx="100" cy="160" rx="65" ry="45" fill="#fff4e8" stroke="#d4a574" stroke-width="1.5"/>
+              <ellipse cx="100" cy="158" rx="55" ry="38" fill="#fffaf0"/>
+              <!-- head -->
+              <ellipse cx="100" cy="95" rx="55" ry="55" fill="#fff4e8" stroke="#d4a574" stroke-width="1.5"/>
+              <!-- ears -->
+              <ellipse cx="58" cy="80" rx="20" ry="32" fill="#e8c5a0" transform="rotate(-20 58 80)"/>
+              <ellipse cx="142" cy="80" rx="20" ry="32" fill="#e8c5a0" transform="rotate(20 142 80)"/>
+              <!-- snout -->
+              <ellipse cx="100" cy="115" rx="22" ry="16" fill="#fffaf0"/>
+              <!-- nose -->
+              <ellipse cx="100" cy="105" rx="6" ry="5" fill="#2a1a14"/>
+              <!-- eyes -->
+              <ellipse cx="82" cy="92" rx="4" ry="5" fill="#2a1a14"/>
+              <ellipse cx="118" cy="92" rx="4" ry="5" fill="#2a1a14"/>
+              <circle cx="83" cy="90" r="1.2" fill="#fff"/>
+              <circle cx="119" cy="90" r="1.2" fill="#fff"/>
+              <!-- mouth -->
+              <path d="M 92 118 Q 100 124 108 118" stroke="#2a1a14" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <!-- rose in mouth -->
+              <g transform="translate(105,115)">
+                <path d="M 0 0 L 30 -10 L 50 -38 Q 55 -50 45 -55 Q 35 -50 32 -42 L 25 -25 Z" fill="#2d6b3f"/>
+                <circle cx="50" cy="-58" r="14" fill="#c92b4a"/>
+                <circle cx="46" cy="-60" r="8" fill="#e8425f"/>
+                <circle cx="52" cy="-62" r="5" fill="#a8324d"/>
+                <path d="M 38 -50 Q 50 -52 58 -45" stroke="#1f4d2a" stroke-width="1.5" fill="none"/>
+              </g>
+              <!-- paws -->
+              <ellipse cx="70" cy="195" rx="12" ry="9" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+              <ellipse cx="130" cy="195" rx="12" ry="9" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 3: HOW DARE YOU ============ -->
+  <section class="page" id="page-3">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="dare-wrap">
+          <!-- sad puppy svg -->
+          <svg class="dare-puppy" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="115" rx="70" ry="60" fill="#fff" stroke="#d8d8d8" stroke-width="1.5"/>
+            <!-- fluff -->
+            <circle cx="50" cy="85" r="22" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="150" cy="85" r="22" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="35" cy="115" r="20" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="165" cy="115" r="20" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="60" cy="150" r="18" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="140" cy="150" r="18" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="100" cy="60" r="22" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="75" cy="65" r="18" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <circle cx="125" cy="65" r="18" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <!-- ears -->
+            <ellipse cx="58" cy="100" rx="14" ry="22" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <ellipse cx="142" cy="100" rx="14" ry="22" fill="#fff" stroke="#d8d8d8" stroke-width="1"/>
+            <!-- face -->
+            <ellipse cx="85" cy="112" rx="4" ry="6" fill="#2a1a14"/>
+            <ellipse cx="115" cy="112" rx="4" ry="6" fill="#2a1a14"/>
+            <ellipse cx="100" cy="128" rx="6" ry="4.5" fill="#d63a5a"/>
+            <path d="M 92 138 Q 100 142 108 138" stroke="#2a1a14" stroke-width="1.5" fill="none"/>
+            <!-- sparkle hairclip -->
+            <path d="M 135 70 L 138 75 L 144 75 L 139 79 L 141 86 L 135 82 L 129 86 L 131 79 L 126 75 L 132 75 Z" fill="#ff4d6a"/>
+          </svg>
+          <h1 class="dare-title">HOW DARE YOU</h1>
+          <button class="btn" data-go="2" style="font-size:26px;padding:12px 32px;">Go back</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4: GOOD GURLLL ============ -->
+  <section class="page" id="page-4">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="good-wrap">
+          <!-- happy puppy with kisses -->
+          <svg class="good-puppy" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="110" rx="68" ry="58" fill="#fff4e8" stroke="#d4a574" stroke-width="1.5"/>
+            <ellipse cx="58" cy="98" rx="20" ry="32" fill="#e8c5a0" transform="rotate(-15 58 98)"/>
+            <ellipse cx="142" cy="98" rx="20" ry="32" fill="#e8c5a0" transform="rotate(15 142 98)"/>
+            <ellipse cx="100" cy="130" rx="22" ry="16" fill="#fffaf0"/>
+            <ellipse cx="100" cy="120" rx="6" ry="5" fill="#2a1a14"/>
+            <!-- happy eyes -->
+            <path d="M 78 105 Q 84 100 90 105" stroke="#2a1a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 110 105 Q 116 100 122 105" stroke="#2a1a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- tongue out smile -->
+            <path d="M 88 134 Q 100 148 112 134" stroke="#2a1a14" stroke-width="2" fill="#3a1a14" stroke-linecap="round"/>
+            <ellipse cx="100" cy="144" rx="8" ry="5" fill="#ff7a93"/>
+            <!-- kiss marks -->
+            <g fill="#ff4d6a" opacity=".85">
+              <path d="M 70 78 c -3 -5 -10 -5 -10 1 c 0 5 10 11 10 11 c 0 0 10 -6 10 -11 c 0 -6 -7 -6 -10 -1 Z"/>
+              <path d="M 140 95 c -2 -3 -7 -3 -7 1 c 0 4 7 8 7 8 c 0 0 7 -4 7 -8 c 0 -4 -5 -4 -7 -1 Z"/>
+              <path d="M 130 135 c -2 -3 -7 -3 -7 1 c 0 4 7 8 7 8 c 0 0 7 -4 7 -8 c 0 -4 -5 -4 -7 -1 Z"/>
+              <path d="M 65 130 c -2 -3 -7 -3 -7 1 c 0 4 7 8 7 8 c 0 0 7 -4 7 -8 c 0 -4 -5 -4 -7 -1 Z"/>
+            </g>
+            <!-- body -->
+            <ellipse cx="100" cy="178" rx="35" ry="18" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+          </svg>
+          <h2 class="good-title">That's a good Gurlll <span style="font-size:38px;">🌻</span></h2>
+          <button class="btn" data-go="5" style="margin-top:14px;">Click</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 5: HAPPY BIRTHDAY ============ -->
+  <section class="page" id="page-5">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="bday-wrap">
+          <!-- birthday dog with cake -->
+          <svg class="bday-dog" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- party hat -->
+            <g>
+              <path d="M 100 30 L 80 80 L 120 80 Z" fill="#a8324d"/>
+              <circle cx="100" cy="28" r="6" fill="#fff" stroke="#a8324d" stroke-width="1"/>
+              <line x1="85" y1="65" x2="115" y2="65" stroke="#fff" stroke-width="2" stroke-dasharray="3 3"/>
+            </g>
+            <!-- head -->
+            <ellipse cx="100" cy="100" rx="55" ry="50" fill="#fff4e8" stroke="#d4a574" stroke-width="1.5"/>
+            <ellipse cx="62" cy="90" rx="18" ry="28" fill="#e8c5a0" transform="rotate(-15 62 90)"/>
+            <ellipse cx="138" cy="90" rx="18" ry="28" fill="#e8c5a0" transform="rotate(15 138 90)"/>
+            <!-- mouth open -->
+            <ellipse cx="100" cy="125" rx="22" ry="14" fill="#fffaf0"/>
+            <ellipse cx="100" cy="116" rx="5" ry="4" fill="#2a1a14"/>
+            <!-- closed happy eyes -->
+            <path d="M 78 100 Q 84 95 90 100" stroke="#2a1a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 110 100 Q 116 95 122 100" stroke="#2a1a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- big smile / tongue -->
+            <path d="M 86 130 Q 100 145 114 130" stroke="#2a1a14" stroke-width="2" fill="#3a1a14"/>
+            <ellipse cx="100" cy="140" rx="9" ry="5" fill="#ff7a93"/>
+            <!-- paws holding cake -->
+            <ellipse cx="78" cy="170" rx="12" ry="9" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+            <ellipse cx="142" cy="170" rx="12" ry="9" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+            <!-- cake -->
+            <g>
+              <rect x="78" y="155" width="64" height="22" rx="3" fill="#ffeecf" stroke="#d4a574" stroke-width="1"/>
+              <path d="M 78 158 Q 95 165 110 158 T 142 158" stroke="#c92b4a" stroke-width="2" fill="none"/>
+              <circle cx="88" cy="160" r="2" fill="#c92b4a"/>
+              <circle cx="100" cy="158" r="2" fill="#c92b4a"/>
+              <circle cx="112" cy="161" r="2" fill="#c92b4a"/>
+              <circle cx="124" cy="158" r="2" fill="#c92b4a"/>
+              <circle cx="135" cy="161" r="2" fill="#c92b4a"/>
+              <!-- candle -->
+              <rect x="107" y="146" width="6" height="12" fill="#fff"/>
+              <path d="M 110 138 Q 113 142 110 146 Q 107 142 110 138" fill="#ff8a3d">
+                <animate attributeName="d" values="M 110 138 Q 113 142 110 146 Q 107 142 110 138;M 110 137 Q 114 141 110 146 Q 106 141 110 137;M 110 138 Q 113 142 110 146 Q 107 142 110 138" dur="1s" repeatCount="indefinite"/>
+              </path>
+            </g>
+          </svg>
+          <h1 class="bday-title">HAPPY BIRTHDAY BBG <span style="font-size:42px;color:#ff4d6a;">♥</span></h1>
+          <p class="bday-line">You are my favorite notification <span style="color:#ff4d6a;">♥</span></p>
+          <p class="bday-line2">Stay cute, stay happy, stay mine 🌸 <span style="color:#ff4d6a;">♥</span></p>
+          <a class="next-link" data-go="6">Next →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 6: ENVELOPE ============ -->
+  <section class="page" id="page-6">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="env-wrap">
+          <div class="envelope" id="envelope">
+            <div class="env-letter"></div>
+            <div class="env-ribbon-h"></div>
+            <div class="env-body"></div>
+            <div class="env-flap"></div>
+            <div class="env-bow">
+              <svg viewBox="0 0 90 46" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5 23 L 38 8 L 38 38 Z" fill="#d94668" stroke="#a8324d" stroke-width="1"/>
+                <path d="M 85 23 L 52 8 L 52 38 Z" fill="#d94668" stroke="#a8324d" stroke-width="1"/>
+                <rect x="38" y="14" width="14" height="18" rx="2" fill="#a8324d"/>
+                <circle cx="45" cy="23" r="4" fill="#ff8aaa"/>
+              </svg>
+            </div>
+          </div>
+          <p class="env-cta" id="envCta">Tap here to open</p>
+          <span class="sparkle" style="top:10%;left:8%;">✦</span>
+          <span class="sparkle" style="top:20%;right:10%;animation-delay:.5s;">✧</span>
+          <span class="sparkle" style="bottom:10%;left:12%;animation-delay:1s;">✦</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 7: LETTER ============ -->
+  <section class="page" id="page-7">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner" style="padding:40px;">
+        <div class="letter-layout">
+          <div class="letter-locket">
+            <!-- teddy bear -->
+            <svg class="teddy" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- ribbon ties at top -->
+              <line x1="40" y1="0" x2="50" y2="22" stroke="#ff8aaa" stroke-width="2"/>
+              <line x1="60" y1="0" x2="50" y2="22" stroke="#ff8aaa" stroke-width="2"/>
+              <!-- ears -->
+              <circle cx="32" cy="34" r="10" fill="#c9a07a"/>
+              <circle cx="68" cy="34" r="10" fill="#c9a07a"/>
+              <circle cx="32" cy="34" r="5" fill="#e8c5a0"/>
+              <circle cx="68" cy="34" r="5" fill="#e8c5a0"/>
+              <!-- head -->
+              <circle cx="50" cy="48" r="22" fill="#e8c5a0"/>
+              <!-- party hat -->
+              <path d="M 50 16 L 38 36 L 62 36 Z" fill="#ff8aaa" opacity=".9"/>
+              <!-- face -->
+              <circle cx="42" cy="48" r="2" fill="#2a1a14"/>
+              <circle cx="58" cy="48" r="2" fill="#2a1a14"/>
+              <ellipse cx="50" cy="56" rx="4" ry="3" fill="#fff" stroke="#c9a07a" stroke-width=".5"/>
+              <circle cx="50" cy="55" r="1.5" fill="#2a1a14"/>
+              <path d="M 47 60 Q 50 63 53 60" stroke="#2a1a14" stroke-width="1" fill="none"/>
+              <!-- body -->
+              <ellipse cx="50" cy="80" rx="16" ry="14" fill="#fff" stroke="#c9a07a" stroke-width="1"/>
+            </svg>
+            <!-- heart locket -->
+            <div class="locket">
+              <svg viewBox="0 0 170 120" xmlns="http://www.w3.org/2000/svg">
+                <!-- left heart -->
+                <g>
+                  <path d="M 50 30 C 50 15, 30 15, 30 35 C 30 55, 50 75, 50 75 C 50 75, 70 55, 70 35 C 70 15, 50 15, 50 30 Z" fill="#fff" stroke="#d4a574" stroke-width="2"/>
+                  <!-- inner photo placeholder -->
+                  <path d="M 50 32 C 50 22, 36 22, 36 36 C 36 50, 50 65, 50 65 C 50 65, 64 50, 64 36 C 64 22, 50 22, 50 32 Z" fill="#fce4ec"/>
+                  <circle cx="50" cy="40" r="6" fill="#3a1a14"/>
+                  <path d="M 38 60 Q 50 50 62 60 L 62 64 L 38 64 Z" fill="#3a1a14"/>
+                </g>
+                <!-- right heart -->
+                <g>
+                  <path d="M 120 30 C 120 15, 100 15, 100 35 C 100 55, 120 75, 120 75 C 120 75, 140 55, 140 35 C 140 15, 120 15, 120 30 Z" fill="#fff" stroke="#d4a574" stroke-width="2"/>
+                  <path d="M 120 32 C 120 22, 106 22, 106 36 C 106 50, 120 65, 120 65 C 120 65, 134 50, 134 36 C 134 22, 120 22, 120 32 Z" fill="#fce4ec"/>
+                  <circle cx="120" cy="40" r="6" fill="#a8324d"/>
+                  <path d="M 108 60 Q 120 50 132 60 L 132 64 L 108 64 Z" fill="#a8324d"/>
+                </g>
+                <!-- chain -->
+                <path d="M 50 18 Q 85 5 120 18" stroke="#d4a574" stroke-width="1.5" fill="none" stroke-dasharray="2 2"/>
+              </svg>
+            </div>
+          </div>
+          <div class="letter-paper">
+            You are seen, you are heard, and you are loved, <span class="accent">no matter what</span>.<br>
+            If you ever feel unloved, remember that my love for you is <span class="accent">boundless</span> and <span class="accent">endless</span>.<br><br>
+            You are the calm in my chaos, the smile in my mornings, and the song I never get tired of.
+          </div>
+        </div>
+        <div class="click-corner" data-go="8">
+          <svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="10" width="18" height="14" rx="2" fill="#fff" stroke="#a8324d" stroke-width="1.5"/>
+            <circle cx="15" cy="17" r="4" fill="none" stroke="#a8324d" stroke-width="1.5"/>
+            <rect x="11" y="6" width="8" height="5" rx="1" fill="#fff" stroke="#a8324d" stroke-width="1.5"/>
+            <text x="22" y="9" font-size="7" fill="#a8324d">✦</text>
+          </svg>
+          Click here
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 8: I LOVE YOU ============ -->
+  <section class="page" id="page-8">
+    <div class="card" style="background:linear-gradient(180deg,#ff8aaa 0%, #d94668 100%);">
+      <div class="card-inner" style="padding:42px 50px;">
+        <div class="iloveyou-wrap">
+          <div class="photo-string">
+            <div class="polaroid polaroid-1">
+              <svg class="pic" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#fff1f4"/>
+                <!-- two friends laughing -->
+                <circle cx="35" cy="45" r="18" fill="#f4c5a0"/>
+                <circle cx="65" cy="45" r="18" fill="#f4c5a0"/>
+                <path d="M 17 45 Q 35 25 53 45" fill="#3a1a14"/>
+                <path d="M 47 45 Q 65 25 83 45" fill="#3a1a14"/>
+                <circle cx="30" cy="44" r="2" fill="#2a1a14"/>
+                <circle cx="40" cy="44" r="2" fill="#2a1a14"/>
+                <circle cx="60" cy="44" r="2" fill="#2a1a14"/>
+                <circle cx="70" cy="44" r="2" fill="#2a1a14"/>
+                <path d="M 30 52 Q 35 58 40 52" stroke="#2a1a14" stroke-width="1" fill="none"/>
+                <path d="M 60 52 Q 65 58 70 52" stroke="#2a1a14" stroke-width="1" fill="none"/>
+                <rect x="20" y="68" width="60" height="32" fill="#ffd0dd"/>
+              </svg>
+            </div>
+            <div class="polaroid polaroid-2">
+              <svg class="pic" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#b9d4a8"/>
+                <!-- garden / outdoor -->
+                <rect y="60" width="100" height="40" fill="#7ab87a"/>
+                <circle cx="35" cy="45" r="14" fill="#f4c5a0"/>
+                <circle cx="65" cy="45" r="14" fill="#f4c5a0"/>
+                <path d="M 21 45 Q 35 30 49 45" fill="#3a1a14"/>
+                <path d="M 51 45 Q 65 30 79 45" fill="#3a1a14"/>
+                <rect x="25" y="55" width="20" height="40" fill="#a8324d"/>
+                <rect x="55" y="55" width="20" height="40" fill="#a8324d"/>
+              </svg>
+            </div>
+            <div class="polaroid polaroid-3">
+              <svg class="pic" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#ffe1ea"/>
+                <!-- shopping mall -->
+                <rect y="0" width="100" height="40" fill="#ffd9c7"/>
+                <rect y="40" width="100" height="60" fill="#e8c5a0"/>
+                <circle cx="35" cy="55" r="14" fill="#f4c5a0"/>
+                <circle cx="65" cy="55" r="14" fill="#f4c5a0"/>
+                <path d="M 21 55 Q 35 40 49 55" fill="#3a1a14"/>
+                <path d="M 51 55 Q 65 40 79 55" fill="#3a1a14"/>
+                <rect x="25" y="65" width="20" height="35" fill="#ff8aaa"/>
+                <rect x="55" y="65" width="20" height="35" fill="#a8324d"/>
+              </svg>
+            </div>
+          </div>
+          <h1 class="iloveyou-title">I L<span style="position:relative;display:inline-block;">O<span style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);color:#fff;">♥</span></span>VE Y<span style="position:relative;display:inline-block;">O<span style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);color:#fff;">♥</span></span>U</h1>
+          <p class="iloveyou-sub">You don't know how much you mean to me</p>
+
+          <div class="cake-corner">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <rect x="14" y="40" width="52" height="32" rx="2" fill="#ffeecf" stroke="#d4a574" stroke-width="1"/>
+              <path d="M 14 44 Q 26 50 40 44 T 66 44" stroke="#c92b4a" stroke-width="2" fill="none"/>
+              <circle cx="22" cy="46" r="2" fill="#c92b4a"/>
+              <circle cx="40" cy="44" r="2" fill="#c92b4a"/>
+              <circle cx="58" cy="46" r="2" fill="#c92b4a"/>
+              <rect x="37" y="28" width="6" height="14" fill="#fff"/>
+              <path d="M 40 18 Q 44 24 40 30 Q 36 24 40 18" fill="#ff8a3d">
+                <animate attributeName="d" values="M 40 18 Q 44 24 40 30 Q 36 24 40 18;M 40 17 Q 45 23 40 30 Q 35 23 40 17;M 40 18 Q 44 24 40 30 Q 36 24 40 18" dur="1s" repeatCount="indefinite"/>
+              </path>
+            </svg>
+          </div>
+          <div class="gift-corner" data-go="9">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="22" width="40" height="34" rx="2" fill="#fff" stroke="#a8324d" stroke-width="1.5"/>
+              <rect x="26" y="22" width="8" height="34" fill="#d94668"/>
+              <ellipse cx="20" cy="22" rx="10" ry="6" fill="none" stroke="#a8324d" stroke-width="2"/>
+              <ellipse cx="40" cy="22" rx="10" ry="6" fill="none" stroke="#a8324d" stroke-width="2"/>
+              <rect x="26" y="16" width="8" height="8" fill="#d94668"/>
+              <text x="8" y="14" font-size="8" fill="#fff">♥</text>
+            </svg>
+            <span>Click here</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 9: GIFT BOX ============ -->
+  <section class="page" id="page-9">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="gift-wrap">
+          <h2 class="gift-title">Here's a surprise for you!!!</h2>
+          <svg class="giftbox" id="giftbox" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="boxGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffc1d1"/>
+                <stop offset="1" stop-color="#d94668"/>
+              </linearGradient>
+              <linearGradient id="lidGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffd0dd"/>
+                <stop offset="1" stop-color="#ff8aaa"/>
+              </linearGradient>
+            </defs>
+            <!-- box bottom -->
+            <rect x="40" y="90" width="120" height="90" rx="4" fill="url(#boxGrad)"/>
+            <!-- vertical ribbon -->
+            <rect x="92" y="90" width="16" height="90" fill="#a8324d"/>
+            <!-- lid -->
+            <g id="giftLid">
+              <rect x="34" y="78" width="132" height="22" rx="3" fill="url(#lidGrad)"/>
+              <rect x="92" y="78" width="16" height="22" fill="#a8324d"/>
+              <!-- bow -->
+              <ellipse cx="78" cy="68" rx="22" ry="14" fill="#ff8aaa" transform="rotate(-15 78 68)"/>
+              <ellipse cx="122" cy="68" rx="22" ry="14" fill="#ff8aaa" transform="rotate(15 122 68)"/>
+              <ellipse cx="78" cy="68" rx="10" ry="7" fill="#a8324d" transform="rotate(-15 78 68)"/>
+              <ellipse cx="122" cy="68" rx="10" ry="7" fill="#a8324d" transform="rotate(15 122 68)"/>
+              <rect x="92" y="62" width="16" height="14" rx="2" fill="#d94668"/>
+              <line x1="92" y1="74" x2="86" y2="92" stroke="#a8324d" stroke-width="2"/>
+              <line x1="108" y1="74" x2="114" y2="92" stroke="#a8324d" stroke-width="2"/>
+            </g>
+          </svg>
+          <p class="gift-arrow">↗ Tap here</p>
+          <!-- corner puppy -->
+          <svg class="puppy-corner" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="60" rx="32" ry="30" fill="#fff4e8" stroke="#d4a574" stroke-width="1"/>
+            <ellipse cx="30" cy="50" rx="8" ry="14" fill="#e8c5a0"/>
+            <ellipse cx="70" cy="50" rx="8" ry="14" fill="#e8c5a0"/>
+            <!-- hat -->
+            <path d="M 50 18 L 38 38 L 62 38 Z" fill="#ff8aaa"/>
+            <circle cx="50" cy="16" r="3" fill="#fff" stroke="#a8324d" stroke-width="1"/>
+            <!-- face -->
+            <ellipse cx="42" cy="62" rx="2" ry="3" fill="#2a1a14"/>
+            <ellipse cx="58" cy="62" rx="2" ry="3" fill="#2a1a14"/>
+            <ellipse cx="50" cy="72" rx="4" ry="3" fill="#2a1a14"/>
+            <!-- cake -->
+            <rect x="40" y="78" width="20" height="12" rx="2" fill="#ffeecf"/>
+            <circle cx="46" cy="80" r="1.5" fill="#c92b4a"/>
+            <circle cx="54" cy="80" r="1.5" fill="#c92b4a"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 10: VIRTUAL HUG ============ -->
+  <section class="page" id="page-10">
+    <div class="card">
+      <div class="ribbon-left"></div>
+      <div class="ribbon-right"></div>
+      <div class="card-inner">
+        <div class="hug-wrap">
+          <h2 class="hug-title">Here is a virtual hug for you</h2>
+          <!-- bears hugging -->
+          <svg class="hug-bears" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+            <g>
+              <!-- brown bear (right side, behind) -->
+              <g transform="translate(20,20)">
+                <ellipse cx="120" cy="120" rx="48" ry="42" fill="#c9a07a"/>
+                <circle cx="92" cy="92" r="14" fill="#c9a07a"/>
+                <circle cx="148" cy="92" r="14" fill="#c9a07a"/>
+                <circle cx="92" cy="92" r="7" fill="#e8c5a0"/>
+                <circle cx="148" cy="92" r="7" fill="#e8c5a0"/>
+                <circle cx="120" cy="100" r="38" fill="#c9a07a"/>
+                <!-- closed eyes (happy) -->
+                <path d="M 110 95 Q 114 91 118 95" stroke="#3a1a14" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M 122 95 Q 126 91 130 95" stroke="#3a1a14" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <!-- snout -->
+                <ellipse cx="120" cy="108" rx="8" ry="6" fill="#fff"/>
+                <ellipse cx="120" cy="104" rx="3" ry="2" fill="#3a1a14"/>
+                <path d="M 117 110 Q 120 113 123 110" stroke="#3a1a14" stroke-width="1.2" fill="none"/>
+                <!-- arm around white bear -->
+                <ellipse cx="65" cy="120" rx="22" ry="14" fill="#c9a07a" transform="rotate(-15 65 120)"/>
+              </g>
+
+              <!-- white bear (left, front) -->
+              <g transform="translate(0,30)">
+                <circle cx="74" cy="80" r="12" fill="#fff" stroke="#e0d4c4" stroke-width="1"/>
+                <circle cx="118" cy="80" r="12" fill="#fff" stroke="#e0d4c4" stroke-width="1"/>
+                <circle cx="74" cy="80" r="6" fill="#ffcfdc"/>
+                <circle cx="118" cy="80" r="6" fill="#ffcfdc"/>
+                <ellipse cx="96" cy="100" rx="40" ry="36" fill="#fff" stroke="#e0d4c4" stroke-width="1.5"/>
+                <!-- body / arms -->
+                <ellipse cx="96" cy="150" rx="46" ry="32" fill="#fff" stroke="#e0d4c4" stroke-width="1.5"/>
+                <ellipse cx="58" cy="148" rx="20" ry="14" fill="#fff" stroke="#e0d4c4" stroke-width="1.5" transform="rotate(15 58 148)"/>
+                <!-- closed happy eyes -->
+                <path d="M 84 96 Q 88 92 92 96" stroke="#3a1a14" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M 100 96 Q 104 92 108 96" stroke="#3a1a14" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <!-- blush -->
+                <circle cx="78" cy="106" r="4" fill="#ffb0c5" opacity=".7"/>
+                <circle cx="114" cy="106" r="4" fill="#ffb0c5" opacity=".7"/>
+                <!-- snout -->
+                <ellipse cx="96" cy="110" rx="8" ry="6" fill="#fff" stroke="#e0d4c4" stroke-width="1"/>
+                <path d="M 92 108 Q 96 105 100 108" stroke="#3a1a14" stroke-width="1.2" fill="none"/>
+                <ellipse cx="96" cy="112" rx="3" ry="2" fill="#c8546e"/>
+                <path d="M 93 114 Q 96 117 99 114" stroke="#3a1a14" stroke-width="1" fill="none"/>
+              </g>
+              <!-- hearts above -->
+              <g>
+                <text x="50" y="40" font-size="20" fill="#ff4d6a">♥</text>
+                <text x="170" y="50" font-size="14" fill="#ff8aaa">♥</text>
+                <text x="180" y="20" font-size="10" fill="#ff4d6a">♥</text>
+              </g>
+            </g>
+          </svg>
+          <p class="hug-final">— Forever yours ♥</p>
+          <button class="restart-btn" id="restartBtn">↺ Start over</button>
+
+          <!-- flowers corner -->
+          <svg class="flowers" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- happy birthday tag -->
+            <g transform="translate(0,10)">
+              <rect x="6" y="6" width="36" height="24" rx="2" fill="#fff8e0" stroke="#d4a574" stroke-width="1" transform="rotate(-10 24 18)"/>
+              <text x="10" y="20" font-family="Caveat, cursive" font-size="9" fill="#a8324d" transform="rotate(-10 24 18)">Happy</text>
+              <text x="6" y="28" font-family="Caveat, cursive" font-size="9" fill="#a8324d" transform="rotate(-10 24 18)">Birthday</text>
+            </g>
+            <!-- flowers -->
+            <g transform="translate(50,40)">
+              <line x1="20" y1="30" x2="22" y2="70" stroke="#4a7c4a" stroke-width="2"/>
+              <line x1="40" y1="22" x2="38" y2="70" stroke="#4a7c4a" stroke-width="2"/>
+              <line x1="55" y1="32" x2="55" y2="70" stroke="#4a7c4a" stroke-width="2"/>
+              <!-- leaves -->
+              <ellipse cx="14" cy="50" rx="6" ry="3" fill="#5a9d5a" transform="rotate(-30 14 50)"/>
+              <ellipse cx="46" cy="55" rx="6" ry="3" fill="#5a9d5a" transform="rotate(30 46 55)"/>
+              <ellipse cx="60" cy="50" rx="6" ry="3" fill="#5a9d5a" transform="rotate(-20 60 50)"/>
+              <!-- blooms -->
+              <g transform="translate(20,30)">
+                <circle cx="0" cy="-7" r="6" fill="#ff8a3d"/>
+                <circle cx="6" cy="-3" r="6" fill="#ff8a3d"/>
+                <circle cx="3" cy="3" r="6" fill="#ff8a3d"/>
+                <circle cx="-4" cy="-1" r="6" fill="#ff8a3d"/>
+                <circle cx="0" cy="-2" r="3" fill="#fff8e0"/>
+              </g>
+              <g transform="translate(40,22)">
+                <circle cx="0" cy="-7" r="6" fill="#ff5f8f"/>
+                <circle cx="6" cy="-3" r="6" fill="#ff5f8f"/>
+                <circle cx="3" cy="3" r="6" fill="#ff5f8f"/>
+                <circle cx="-4" cy="-1" r="6" fill="#ff5f8f"/>
+                <circle cx="0" cy="-2" r="3" fill="#fff8e0"/>
+              </g>
+              <g transform="translate(55,32)">
+                <circle cx="0" cy="-6" r="5" fill="#c92b4a"/>
+                <circle cx="5" cy="-2" r="5" fill="#c92b4a"/>
+                <circle cx="2" cy="3" r="5" fill="#c92b4a"/>
+                <circle cx="-4" cy="0" r="5" fill="#c92b4a"/>
+                <circle cx="0" cy="-2" r="2.5" fill="#fff8e0"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =====================================================
+   STATE & NAVIGATION
+   ===================================================== */
+const pages = document.querySelectorAll('.page');
+let current = 1;
+
+function goTo(n){
+  if(n === current) return;
+  const cur = document.getElementById('page-'+current);
+  const nxt = document.getElementById('page-'+n);
+  if(!nxt) return;
+  cur.classList.add('leaving');
+  cur.classList.remove('active');
+  setTimeout(()=>{cur.classList.remove('leaving');},800);
+  nxt.classList.add('active');
+  current = n;
+
+  // celebrate on certain pages
+  if(n === 5) confettiBurst(60);
+  if(n === 10) {confettiBurst(120); setTimeout(()=>confettiBurst(80),500);}
+  if(n === 8) confettiBurst(40);
+}
+
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click',(e)=>{
+    e.preventDefault();
+    burstHearts(e.clientX, e.clientY);
+    goTo(parseInt(el.dataset.go));
+  });
+});
+
+/* =====================================================
+   PAGE 1: PASSWORD
+   ===================================================== */
+const pwInput = document.getElementById('pwInput');
+const pwError = document.getElementById('pwError');
+const captchaCheck = document.getElementById('captchaCheck');
+const pwContinue = document.getElementById('pwContinue');
+const instaBar = document.getElementById('instaBar');
+
+setTimeout(()=>instaBar.classList.add('show'), 600);
+
+let captchaOk = false;
+let pwOk = false;
+function updateContinue(){
+  if(captchaOk && pwOk) pwContinue.classList.add('active');
+  else pwContinue.classList.remove('active');
+}
+captchaCheck.addEventListener('click',()=>{
+  captchaCheck.classList.add('checked');
+  captchaOk = true;
+  updateContinue();
+});
+pwInput.addEventListener('input',()=>{
+  pwError.textContent = '';
+  pwOk = pwInput.value.trim().length >= 2;
+  updateContinue();
+});
+pwContinue.addEventListener('click',(e)=>{
+  const v = pwInput.value.trim().toLowerCase();
+  // any non-empty password works after captcha (it's a surprise after all)
+  if(!captchaOk){pwError.textContent='Please verify you are human ♡';return;}
+  if(!v){pwError.textContent='Type something cute ♡';return;}
+  burstHearts(e.clientX, e.clientY);
+  goTo(2);
+});
+pwInput.addEventListener('keydown',(e)=>{
+  if(e.key === 'Enter' && pwContinue.classList.contains('active')) pwContinue.click();
+});
+
+/* =====================================================
+   PAGE 2: HEY — the dodging No button
+   ===================================================== */
+const btnNo = document.getElementById('btn-no');
+let dodgeCount = 0;
+let dodgeX = 0, dodgeY = 0;
+btnNo.addEventListener('mouseenter', dodgeNo);
+btnNo.addEventListener('touchstart', dodgeNo, {passive:true});
+function dodgeNo(){
+  dodgeCount++;
+  const card = btnNo.closest('.card');
+  const cardRect = card.getBoundingClientRect();
+  // reset transform momentarily to read natural rect
+  const prev = btnNo.style.transform;
+  btnNo.style.transform = '';
+  const naturalRect = btnNo.getBoundingClientRect();
+  btnNo.style.transform = prev;
+  // safe bounds inside card
+  const pad = 30;
+  const minX = cardRect.left + pad;
+  const maxX = cardRect.right - pad - naturalRect.width;
+  const minY = cardRect.top + pad;
+  const maxY = cardRect.bottom - pad - naturalRect.height;
+  // pick a target then convert to offset
+  const tx = minX + Math.random() * Math.max(40, maxX - minX);
+  const ty = minY + Math.random() * Math.max(40, maxY - minY);
+  dodgeX = tx - naturalRect.left;
+  dodgeY = ty - naturalRect.top;
+  btnNo.style.transform = `translate(${dodgeX}px, ${dodgeY}px) rotate(${(Math.random()-.5)*20}deg)`;
+  if(dodgeCount === 3) btnNo.textContent = 'No?';
+  if(dodgeCount === 5) btnNo.textContent = 'Pls';
+  if(dodgeCount === 7) btnNo.textContent = 'Why...';
+  if(dodgeCount === 9) btnNo.textContent = '😢';
+}
+btnNo.addEventListener('click',(e)=>{
+  burstHearts(e.clientX, e.clientY);
+  goTo(3);
+});
+
+/* =====================================================
+   PAGE 6: ENVELOPE
+   ===================================================== */
+const envelope = document.getElementById('envelope');
+const envCta = document.getElementById('envCta');
+envelope.addEventListener('click',(e)=>{
+  if(envelope.classList.contains('open')){
+    goTo(7);
+    return;
+  }
+  envelope.classList.add('open');
+  envCta.textContent = 'Tap again to read…';
+  burstHearts(e.clientX, e.clientY);
+});
+
+/* =====================================================
+   PAGE 9: GIFT BOX
+   ===================================================== */
+const giftbox = document.getElementById('giftbox');
+const giftLid = document.getElementById('giftLid');
+giftbox.addEventListener('click',(e)=>{
+  giftLid.style.transition = 'transform 1s cubic-bezier(.4,1.6,.6,1)';
+  giftLid.style.transform = 'translateY(-80px) rotate(-12deg)';
+  burstHearts(e.clientX, e.clientY);
+  confettiBurst(80);
+  setTimeout(()=>goTo(10), 900);
+});
+
+/* =====================================================
+   RESTART
+   ===================================================== */
+document.getElementById('restartBtn').addEventListener('click',()=>{
+  // reset states
+  document.getElementById('page-10').classList.remove('active');
+  document.getElementById('page-1').classList.add('active');
+  current = 1;
+  pwInput.value=''; pwError.textContent='';
+  captchaCheck.classList.remove('checked');
+  captchaOk = false; pwOk = false;
+  pwContinue.classList.remove('active');
+  envelope.classList.remove('open');
+  envCta.textContent = 'Tap here to open';
+  giftLid.style.transform = '';
+  btnNo.style.transform = '';
+  btnNo.textContent = 'No';
+  dodgeCount = 0;
+});
+
+/* =====================================================
+   CUSTOM CURSOR
+   ===================================================== */
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mx = innerWidth/2, my = innerHeight/2;
+let rx = mx, ry = my;
+addEventListener('mousemove',(e)=>{mx=e.clientX;my=e.clientY;});
+function loop(){
+  rx += (mx-rx)*0.18;
+  ry += (my-ry)*0.18;
+  cursorDot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+  cursorRing.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+  requestAnimationFrame(loop);
+}
+loop();
+
+document.querySelectorAll('button, input, [data-go], .envelope, .giftbox, .pw-continue, .click-corner, .gift-corner, .restart-btn, .next-link, .captcha .check').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursorRing.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cursorRing.classList.remove('hover'));
+});
+
+/* heart trail on move */
+let lastTrail = 0;
+addEventListener('mousemove',(e)=>{
+  const now = performance.now();
+  if(now-lastTrail < 60) return;
+  lastTrail = now;
+  if(Math.random() > 0.7){
+    const h = document.createElement('span');
+    h.textContent = ['♥','♡','✦'][Math.floor(Math.random()*3)];
+    h.style.cssText = `position:fixed;top:${e.clientY}px;left:${e.clientX}px;color:hsl(${340+Math.random()*20},80%,${65+Math.random()*15}%);font-size:${10+Math.random()*8}px;pointer-events:none;z-index:9998;transition:transform 1s ease, opacity 1s;`;
+    document.body.appendChild(h);
+    requestAnimationFrame(()=>{
+      h.style.transform = `translate(${(Math.random()-.5)*40}px, ${-30-Math.random()*40}px) scale(.3)`;
+      h.style.opacity = '0';
+    });
+    setTimeout(()=>h.remove(), 1000);
+  }
+});
+
+/* =====================================================
+   FLOATING HEARTS BACKGROUND
+   ===================================================== */
+const heartBg = document.getElementById('heartBg');
+const hearts = ['♥','♡','✿','✦','♥','♥'];
+for(let i=0;i<22;i++){
+  const s = document.createElement('span');
+  s.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+  s.style.left = Math.random()*100 + '%';
+  s.style.fontSize = (12 + Math.random()*22) + 'px';
+  s.style.animationDuration = (10 + Math.random()*14) + 's';
+  s.style.animationDelay = (Math.random()*15) + 's';
+  s.style.opacity = (0.25 + Math.random()*0.45);
+  heartBg.appendChild(s);
+}
+
+/* =====================================================
+   BURST + CONFETTI
+   ===================================================== */
+function burstHearts(x,y){
+  const symbols = ['♥','♡','✦','✿','♥'];
+  for(let i=0;i<10;i++){
+    const el = document.createElement('span');
+    el.className = 'burst';
+    el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.color = `hsl(${340+Math.random()*30},80%,${55+Math.random()*20}%)`;
+    el.style.setProperty('--bx', (Math.random()-.5)*200 + 'px');
+    el.style.setProperty('--by', (Math.random()-.5)*200 + 'px');
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 1500);
+  }
+}
+
+function confettiBurst(count){
+  const colors = ['#ff4d6a','#ff8aaa','#ffd0dd','#a8324d','#ff5f8f','#c92b4a','#fff'];
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = (Math.random()*100) + '%';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.transform = `rotate(${Math.random()*360}deg)`;
+    el.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    const dur = 2 + Math.random()*2;
+    const drift = (Math.random()-.5)*200;
+    el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s`;
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.top = '110vh';
+      el.style.transform = `translateX(${drift}px) rotate(${720+Math.random()*720}deg)`;
+      el.style.opacity = '0';
+    });
+    setTimeout(()=>el.remove(), dur*1000 + 100);
+  }
+}
+
+/* =====================================================
+   AUDIO (optional ambient)
+   click to play a soft note using WebAudio
+   ===================================================== */
+let audioCtx;
+function chime(freq=523.25){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.value = freq;
+  g.gain.value = 0.0001;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime+0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.6);
+  o.stop(audioCtx.currentTime+0.7);
+}
+document.querySelectorAll('.btn, [data-go], .envelope, .giftbox, .pw-continue').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
+    chime(notes[Math.floor(Math.random()*notes.length)]);
+  });
+});
+
+</script>
+</body>
+</html>
